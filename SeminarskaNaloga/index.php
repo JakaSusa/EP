@@ -5,29 +5,37 @@ session_start();
 require_once("controllers/storeController.php");
 
 
-define("BASE_URL", $_SERVER["SCRIPT_NAME"] . "/");
+define("BASE_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php"));
 define("IMAGES_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php") . "static/images/");
 define("CSS_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php") . "static/css/");
 
 $path = isset($_SERVER["PATH_INFO"]) ? trim($_SERVER["PATH_INFO"], "/"): "";
 
 $urls = [
-    "products" => function() {
+    "/^firstpage$/" => function() {
         StoreController::index();
     },
-    "" => function () {
-        ViewHelper::redirect(BASE_URL . "products");
+    "/^products$/" => function() {
+        StoreController::allProducts();
+    },
+    "/^$/" => function () {
+        ViewHelperStore::redirect(BASE_URL . "firstpage");
     }
+
 ];
 
-try {
-    if (isset($urls[$path])) {
-        $urls[$path]();
-    } else {
-        echo "No controller for '$path'";
+foreach ($urls as $pattern => $controller) {
+    if (preg_match($pattern, $path, $params)) {
+        try {
+            $params[0] = $_SERVER["REQUEST_METHOD"];
+            $controller(...$params);
+        } catch (InvalidArgumentException $e) {
+            ViewHelperStore::error404();
+        } catch (Exception $e) {
+            ViewHelperStore::displayError($e, true);
+        }
+
+        exit();
     }
-} catch (InvalidArgumentException $e) {
-    ViewHelper::error404();
-} catch (Exception $e) {
-    echo "An error occurred: <pre>$e</pre>";
 }
+ViewHelperStore::displayError(new InvalidArgumentException("No controller matched."), true);
