@@ -18,6 +18,9 @@ $urls = [
     "/^products$/" => function() {
         StoreController::allProducts();
     },
+    "/^products\/(\d+)$/" => function($method, $product_id){
+        StoreController::getProduct($product_id);
+    },
     "/^$/" => function () {
         ViewHelperStore::redirect(BASE_URL . "firstpage");
     }

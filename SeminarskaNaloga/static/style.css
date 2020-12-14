@@ -16,7 +16,6 @@ button {
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
-    margin: 8px 0;
     border: none;
     cursor: pointer;
     width: 100%;
@@ -98,7 +97,14 @@ span.psw {
     -webkit-animation: animatezoom 0.6s;
     animation: animatezoom 0.6s
 }
-
+.product {
+    display: inline-block;
+    text-align: center;
+    width: 200px;
+    margin: 1em;
+    border: 1px solid black;
+    vertical-align: top;
+}
 @-webkit-keyframes animatezoom {
     from {-webkit-transform: scale(0)}
     to {-webkit-transform: scale(1)}

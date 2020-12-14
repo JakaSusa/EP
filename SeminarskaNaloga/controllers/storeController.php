@@ -1,5 +1,5 @@
 <?php
-
+require_once ("models/ProductsDB.php");
 require_once ("ViewHelperStore.php");
 
 class storeController {
@@ -14,10 +14,12 @@ class storeController {
     public static function allProducts(){
         echo ViewHelperStore::render("views/productList.php",
             ["products" => ProductsDB::getAll()]);
+
     }
 
     public static function getProduct($id) {
-        echo ViewHelperStore::render("view/product-detail.php", ProductsDB::get(["id" => $id]));
+        echo ViewHelperStore::render("views/productDetail.php",
+            ["product" => ProductsDB::get(["product_id" => $id])]);
     }
 
 

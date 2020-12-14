@@ -1,12 +1,12 @@
 <?php
 
-require_once 'models/AbstractDB.php';
+require_once 'AbstractDB.php';
 
 class ProductsDB extends AbstractDB {
 
     public static function getAll()
     {
-        echo "OK";
+
         return parent::query("SELECT * FROM produkt");
     }
 
