@@ -25,13 +25,14 @@ class ProductsDB extends AbstractDB {
 
     public static function insert(array $params)
     {
-        return parent::modify("INSERT INTO produkt (name, price, describtion, status)"
+        echo var_dump($params);
+        return parent::modify("INSERT INTO produkt (name, price, describtion, status_status_id)"
         . "VALUES (:name, :price, :describtion, :status)", $params);
     }
 
     public static function update(array $params)
     {
-        return parent::modify("UPDATE produkt SET name = :name, price = :price, describtion = :describtion, status = :status"
+        return parent::modify("UPDATE produkt SET name = :name, price = :price, describtion = :describtion, status_status_id = :status "
         . "WHERE product_id = :product_id", $params);
     }
 

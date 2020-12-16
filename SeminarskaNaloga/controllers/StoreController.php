@@ -2,7 +2,7 @@
 require_once ("models/ProductsDB.php");
 require_once ("ViewHelperStore.php");
 
-class storeController {
+class StoreController {
 
     public static function index() {
 
@@ -14,7 +14,6 @@ class storeController {
     public static function allProducts(){
         echo ViewHelperStore::render("views/productList.php",
             ["products" => ProductsDB::getAll()]);
-
     }
 
     public static function getProduct($id) {

@@ -9,7 +9,9 @@
     <div class="container">
         <div class="col-12 justify-content-center">
             <div class="row align-self-center">
-                <h1>STORE</h1>
+                <form action="<?=BASE_URL ?> " method="">
+                    <button><h1>STORE</h1></button>
+                </form>
             </div>
             <div class="row align-self-center">
                 <h2>DOBRODOŠLI V SPLETNI TRGOVINI STORE</h2>
@@ -47,6 +49,38 @@
                         </div>
                     </form>
                 </div>
+
+
+            <button onclick="document.getElementById('id02').style.display='block'">Registracija</button>
+
+            <!-- The Modal -->
+            <div id="id02" class="modal">
+                    <span onclick="document.getElementById('id02').style.display='none'"
+                          class="close" title="Close Modal">&times;</span>
+
+                <!-- Modal Content -->
+                <form class="modal-content animate" action="<?= BASE_URL . "costumer/create" ?>" method="post">
+
+                    <div class="container">
+                            <p><label>Ime: <input type="text" placeholder="Vnesi ime" name="name" value="<?=$name?>" required/></label></p>
+                            <p><label>Priimek: <input type="text" placeholder="Vnesi priimek" name="surname" value="<?=$surname?>" required/></label></p>
+                            <p><label>Email: <input type="email" placeholder="Vnesi email" name="email" value="<?=$email?>" required/></label></p>
+                            <p><label>Geslo: <input type="password" placeholder="Vnesi geslo" name="password" value="<?=$password?>" required/></label></p>
+                            <p><label>Pošta: <input type="number" placeholder="Vnesi poštno številko" name="naslov_postNum" value="<?=$naslov_postNum?>" required/></label></p>
+<!--                            <p><label>Kraj: <input type="text" placeholder="Vnesi kraj" name="name" value="--><?//=$postName?><!--" required/></label></p>-->
+                            <p><label>Naslov: <input type="text" placeholder="Vnesi naslov" name="street" value="<?=$street?>" required/></label></p>
+
+                            <button type="submit">Registracija</button>
+                    </div>
+
+                    <div class="container" style="background-color:#f1f1f1">
+                        <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+
+
             <div class="row align-self-center">
                 <H3>Nadaljuj kot gost</H3>
             </div>
@@ -58,6 +92,15 @@
     <script>
         // Get the modal
         var modal = document.getElementById('id01');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        var modal = document.getElementById('id02');
 
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
