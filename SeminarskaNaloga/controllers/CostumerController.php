@@ -15,11 +15,13 @@ class CostumerController
 
     public static function registration() {
         $data = filter_input_array(INPUT_POST, self::getRules());
-         echo var_dump($data);
+
+        $data["password"] = password_hash($data["password"], PASSWORD_DEFAULT);
         if(self::checkValues($data)){
             $id = CostumerDB::insert($data);
-
-            echo ViewHelperStore::redirect(BASE_URL . "seller/costumers");
+            $message = "uporabnik dodan, za nadaljevanje je potrebna prijava.";
+            echo ViewHelperStore::redirect(BASE_URL);
+            echo ViewHelperStore::render(BASE_URL, $message);
         }
     }
 
@@ -35,6 +37,7 @@ class CostumerController
     }
 
     public static function editCostumer($id) {
+
         $data = filter_input_array(INPUT_POST, self::getRulesEdit());
         echo var_dump($data);
         if (self::checkValues($data)) {
@@ -50,6 +53,8 @@ class CostumerController
         echo ViewHelperStore::redirect(BASE_URL . "seller/costumers");
 
     }
+
+
 
     public static function checkValues($input) {
         if (empty($input)) {

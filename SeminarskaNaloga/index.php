@@ -1,6 +1,6 @@
 <?php
 
-
+session_start();
 
 require_once("controllers/StoreController.php");
 require_once("controllers/SellerController.php");
@@ -12,6 +12,16 @@ define("IMAGES_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php") . "static/image
 define("CSS_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php") . "static/css/");
 
 $path = isset($_SERVER["PATH_INFO"]) ? trim($_SERVER["PATH_INFO"], "/"): "";
+
+//$id = "1";
+//SellerDB::delete(["prodajalec_id" => $id]);
+//$data = array();
+//$data["name"] = "Janez";
+//$data["surname"] = "Prodajalec";
+//$data["email"] = "janez.prodajalec@store.com";
+//$data["password"] = password_hash("password", PASSWORD_DEFAULT);
+//$data["status_status_id"] = 1;
+//$a = SellerDB::insert($data);
 
 $urls = [
     "/^firstpage$/" => function() {
@@ -42,6 +52,20 @@ $urls = [
     "/^products\/(\d+)$/" => function($method, $product_id){
         StoreController::getProduct($product_id);
     },
+
+    "/product\/add-to-cart$/" => function($method){
+        StoreController::addToCart();
+    },
+    "/product\/update-cart$/" => function($method){
+        StoreController::updateCart();
+    },
+    "/product\/purge-cart$/" => function($method){
+        StoreController::purgeCart();
+    },
+    "/products\/order$/" => function($method){
+        OrderController::orderCreate();
+    },
+
     "/^seller$/" => function() {
         SellerController::index();
     },
@@ -56,6 +80,15 @@ $urls = [
             CostumerController::registration();
         }
     },
+    "/^seller\/(\d+)\/edit$/" => function($method, $id) {
+        if($method == "POST"){
+            StoreController::editSeller($id);
+        }
+        else {
+            SellerController::editSellerForm($id);
+        }
+    },
+
     "/^costumer\/(\d+)\/edit$/" => function($method, $id) {
         if($method == "POST"){
             CostumerController::editCostumer($id);
@@ -64,10 +97,16 @@ $urls = [
             CostumerController::editCostumerForm($id);
         }
     },
-
     "/^costumer\/(\d+)\/delete$/" => function($method, $id) {
         CostumerController::deleteCostumer($id);
     },
+     "/^login$/" => function() {
+       StoreController::login();
+     },
+    "/^logout$/" => function() {
+        StoreController::logout();
+    },
+
     "/^$/" => function () {
         ViewHelperStore::redirect(BASE_URL . "firstpage");
     }

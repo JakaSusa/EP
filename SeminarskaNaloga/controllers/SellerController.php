@@ -68,7 +68,38 @@ class SellerController
     public static function deleteProduct($id) {
         ProductsDB::delete(["product_id" => $id]);
         echo ViewHelperStore::redirect(BASE_URL . "seller/products");
-        
+
+    }
+
+
+
+    public static function editSellerForm($params) {
+        if (is_array($params)) {
+            $values = $params;
+        } else if (is_numeric($params)) {
+            $values = SellerDB::get(["prodajalec_id" => $params]);
+        } else {
+            throw new InvalidArgumentException("Cannot show form.");
+        }
+        echo ViewHelperStore::render("views/costumerEdit.php", $values);
+    }
+
+    public static function editSeller($id) {
+
+        $data = filter_input_array(INPUT_POST, self::getRulesEdit());
+        if (self::checkValues($data)) {
+            $data["prodajalec_id"] = $id;
+            SellerDB::update($data);
+            echo ViewHelperStore::redirect(BASE_URL . "seller");
+        } else {
+            self::editSellerForm($data);
+        }
+    }
+
+    public static function deleteCostumer($id) {
+        CostumerDB::delete(["stranka_id" => $id]);
+        echo ViewHelperStore::redirect(BASE_URL . "seller/costumers");
+
     }
 
 
@@ -90,6 +121,15 @@ class SellerController
             'describtion' => FILTER_SANITIZE_SPECIAL_CHARS,
             'price' => FILTER_VALIDATE_FLOAT,
             'status' => FILTER_VALIDATE_FLOAT
+        ];
+    }
+    public static function getRulesEdit() {
+        return [
+            'name' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'surname' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'email' => FILTER_VALIDATE_EMAIL,
+            'password' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'status_status_id' => FILTER_VALIDATE_FLOAT
         ];
     }
 

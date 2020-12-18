@@ -8,7 +8,7 @@ INSERT INTO administrator (admin_id, name, surname, email, password) VALUES
 
 DELETE FROM prodajalec ;
 INSERT INTO prodajalec (prodajalec_id, name, surname, email, password, status_status_id) VALUES
-(1, 'Janez', 'Prodajalec', 'janez.prodajalec@store.com', 'password',
+(1, 'Janez', 'Prodajalec', 'janez.prodajalec@store.com', '$2y$10$j2zmlE8KaHAQXqSKupB54u5Rev5JbI5W89P47F9kq/lYcphN/RPW.',
 (SELECT status_id FROM status WHERE name = 'aktiven'));
 
 DELETE FROM stranka;

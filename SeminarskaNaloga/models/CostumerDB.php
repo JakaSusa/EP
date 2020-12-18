@@ -36,7 +36,15 @@ class CostumerDB extends AbstractDB {
     {
         return parent::modify("DELETE FROM stranka WHERE stranka_id = :stranka_id", $id);
     }
-}
-{
 
+    public static function login($email)
+    {
+        $costumer = parent::query("SELECT * FROM stranka WHERE email = :email" , $email);
+        if(count($costumer)== 1){
+            return $costumer[0];
+        }
+        else {
+            return null;
+        }
+    }
 }

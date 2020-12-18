@@ -40,4 +40,9 @@ class ProductsDB extends AbstractDB {
     {
         return parent::modify("DELETE FROM produkt WHERE product_id = :product_id", $id);
     }
+
+    public static function login($params)
+    {
+        // TODO: Implement login() method.
+    }
 }

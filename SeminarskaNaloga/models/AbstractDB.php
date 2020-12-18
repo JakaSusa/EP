@@ -72,4 +72,6 @@ abstract class AbstractDB{
     public static abstract function update(array $params);
 
     public static abstract function delete(array $id);
+
+    public static abstract function login(array $email);
 }
