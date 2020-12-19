@@ -25,7 +25,6 @@ class ProductsDB extends AbstractDB {
 
     public static function insert(array $params)
     {
-        echo var_dump($params);
         return parent::modify("INSERT INTO produkt (name, price, describtion, status_status_id)"
         . "VALUES (:name, :price, :describtion, :status)", $params);
     }

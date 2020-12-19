@@ -1,5 +1,13 @@
 RewriteEngine On
+#
 RewriteBase /phpstorm/EP/SeminarskaNaloga/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{HTTPS} off
 RewriteRule ^(.*) index.php/$1 [L,PT,QSA]
+#RewriteRule ".*" "https://%{HTTP_HOST}%{REQUEST_URI}"
+
+
+#SSLVerifyClient require
+#SSLVerifyDepth 1
+SSLOptions +ExportCertData

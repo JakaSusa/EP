@@ -1,5 +1,7 @@
 <?php
 
+require_once 'AbstractDB.php';
+
 
 class OrderDB extends AbstractDB
 {
@@ -19,7 +21,10 @@ class OrderDB extends AbstractDB
     {
         return parent::query("SELECT * FROM narocilo");
     }
-
+    public static function getAllFromCostumer(array $id)
+    {
+        return parent::query("SELECT * FROM narocilo WHERE stranka_stranka_id = :stranka", $id);
+    }
     public static function insert(array $params)
     {
         return parent::modify("INSERT INTO narocilo (created, status_status_id, stranka_stranka_id)"
@@ -28,7 +33,7 @@ class OrderDB extends AbstractDB
 
     public static function update(array $params)
     {
-        return parent::modify("UPDATE narocilo SET created = :time, status_status_id = :status, stranka_stranka_id = :stranka_stranka_id"
+        return parent::modify("UPDATE narocilo SET created = :time, status_status_id = :status, stranka_stranka_id = :stranka"
     . " WHERE order_id = :order_id", $params);
     }
 

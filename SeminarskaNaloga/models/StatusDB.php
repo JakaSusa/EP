@@ -1,15 +1,20 @@
 <?php
 
+
 require_once 'AbstractDB.php';
 
-
-class ProductInOrder extends AbstractDB
+class StatusDB extends AbstractDB
 {
 
     public static function get(array $id)
     {
-        return parent::query("SELECT * FROM narocilo_has_produkt WHERE narocilo_order_id = :order_id", $id);
-
+        $status = parent::query("SELECT * FROM status WHERE status_id = :status", $id);
+        if(count($status)== 1){
+            return $status[0];
+        }
+        else {
+            throw new InvalidArgumentException("Tako naročilo ne obstaja");
+        }
     }
 
     public static function getAll()
@@ -19,8 +24,7 @@ class ProductInOrder extends AbstractDB
 
     public static function insert(array $params)
     {
-        return parent::modify("INSERT INTO narocilo_has_produkt (narocilo_order_id, produkt_product_id, kolicina)"
-            . "VALUES (:order_id, :product_id, :kolicina)", $params);
+        // TODO: Implement insert() method.
     }
 
     public static function update(array $params)

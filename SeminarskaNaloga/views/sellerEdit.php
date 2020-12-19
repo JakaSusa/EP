@@ -45,40 +45,39 @@ if($_SESSION["role"] == "seller"): ?>
     </div>
 <?php endif; ?>
 
-<form action="<?= BASE_URL . "costumer/" . $stranka_id. "/edit" ?>" method="post">
+<form action="<?= BASE_URL . "seller/" . $prodajalec_id. "/edit" ?>" method="post">
 
     <div class="container">
         <p><label>Ime: <input type="text"  name="name" value="<?=$name?>" required/></label></p>
         <p><label>Priimek: <input type="text"  name="surname" value="<?=$surname?>" required/></label></p>
         <p><label>Email: <input type="email"  name="email" value="<?=$email?>" required/></label></p>
         <p><label>Geslo: <input type="password" name="password" value="<?=$password?>" required/></label></p>
-        <p><label>Pošta: <input type="number" name="naslov_postNum" value="<?=$naslov_postNum?>" required/></label></p>
-        <p><label>Naslov: <input type="text"  name="street" value="<?=$street?>" required/></label></p>
-        <input hidden type="number"  name="status_status_id" value="<?=$status_status_id?>" required/>
-        <?php if($_SESSION["role"]=="seller"):
+        <input hidden type="number"  name="status_status_id" value="<?=$status_status_id?>" required/
+        <?php if($_SESSION["role"]=="admin"):
             $status = StatusDB::get(["status" => $status_status_id])
 
             ?>
             <p>Status: <?=$status["name"]?> </p>
 
         <?php endif;?>
-        <button type="submit">Posodobi podatke</button>
+    <button type="submit">Posodobi podatke</button>
     </div>
 </form>
-<?php if($_SESSION["role"]=="seller") :
+<?php if($_SESSION["role"]=="admin"):
     if($status["status_id"]==2 ): ?>
-        <form action="<?=BASE_URL . "costumer/activate" ?>" method="post">
-            <input type="hidden" name="id" value="<?=$stranka_id ?>"/>
-            <button>aktiviraj uporabnika</button>
-        </form>
-    <?php else: ?>
-        <form action="<?=BASE_URL . "costumer/deactivate" ?>" method="post">
-            <input type="hidden" name="id" value="<?=$stranka_id ?>"/>
-            <button>Deaktiviraj uporabnika</button>
-        </form>
+            <form action="<?=BASE_URL . "seller/activate" ?>" method="post">
+                <input type="hidden" name="id" value="<?=$prodajalec_id ?>"/>
+                <button>aktiviraj uporabnika</button>
+            </form>
+        <?php else: ?>
+            <form action="<?=BASE_URL . "seller/deactivate" ?>" method="post">
+                <input type="hidden" name="id" value="<?=$prodajalec_id ?>"/>
+                <button>Deaktiviraj uporabnika</button>
+            </form>
     <?php endif;
     endif;?>
 <form action="<?=BASE_URL . "costumer/" . $stranka_id . "/delete" ?>" method="post">
-<button class="sellerbtn">odstrani</button>
+    <button class="sellerbtn">odstrani</button>
 </form>
 
+<?php

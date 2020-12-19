@@ -1,3 +1,9 @@
+<?php
+if (!isset($_SERVER["HTTPS"])) {
+    $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+    header("Location: " . $url);
+}
+?>
 <!DOCTYPE html>
 
 <link rel="stylesheet" type="text/css" href="../static/style.css">
@@ -5,7 +11,7 @@
 <meta charset="UTF-8" />
 <?php
 if($_SESSION["role"] == "costumer"): ?>
-    <a href="<?= BASE_URL . "costumer/" . $_SESSION["user"]["stranka_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+    <a href="<?= BASE_URL . "costumer/menu" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
     <form action="<?=BASE_URL . "logout"?> " method="">
         <button><p>odjava</p></button>
     </form>

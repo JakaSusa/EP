@@ -2,6 +2,7 @@
 
 require_once ("models/CostumerDB.php");
 require_once ("models/ProductsDB.php");
+require_once ("models/StatusDB.php");
 require_once ("ViewHelperStore.php");
 
 class SellerController
@@ -13,65 +14,6 @@ class SellerController
         echo ViewHelperStore::render("views/sellerMenu.php", []);
 
     }
-    public static function allProducts(){
-        echo ViewHelperStore::render("views/productsSeller.php",
-            ["products" => ProductsDB::getAll()]);
-    }
-
-    public static function getProduct($id) {
-        echo ViewHelperStore::render("views/productDetail.php",
-            ["product" => ProductsDB::get(["product_id" => $id])]);
-    }
-
-    public static function createProductFrom ($values = [
-        "name" => "",
-        "price" => "",
-        "describtion" => "",
-        "status" => ""
-    ]){
-        echo ViewHelperStore::render("views/productCreate.php", $values);
-    }
-
-    public static function createProduct(){
-        $data = filter_input_array(INPUT_POST,self::getRules());
-        if(self::checkValues($data)){
-            $id = ProductsDB::insert($data);
-
-            echo ViewHelperStore::redirect(BASE_URL . "seller/products");
-        }
-        else{
-            self::createProductFrom($data);
-        }
-    }
-
-    public static function editProductForm($params) {
-        if (is_array($params)) {
-            $values = $params;
-        } else if (is_numeric($params)) {
-            $values = ProductsDB::get(["product_id" => $params]);
-        } else {
-            throw new InvalidArgumentException("Cannot show form.");
-        }
-        echo ViewHelperStore::render("views/productEdit.php", $values);
-    }
-
-    public static function editProduct($id) {
-        $data = filter_input_array(INPUT_POST, self::getRules());
-        if (self::checkValues($data)) {
-            $data["product_id"] = $id;
-            ProductsDB::update($data);
-            echo ViewHelperStore::redirect(BASE_URL . "seller/products");
-        } else {
-            self::editProductForm($data);
-        }
-    }
-    public static function deleteProduct($id) {
-        ProductsDB::delete(["product_id" => $id]);
-        echo ViewHelperStore::redirect(BASE_URL . "seller/products");
-
-    }
-
-
 
     public static function editSellerForm($params) {
         if (is_array($params)) {
@@ -81,7 +23,7 @@ class SellerController
         } else {
             throw new InvalidArgumentException("Cannot show form.");
         }
-        echo ViewHelperStore::render("views/costumerEdit.php", $values);
+        echo ViewHelperStore::render("views/sellerEdit.php", $values);
     }
 
     public static function editSeller($id) {
@@ -95,13 +37,46 @@ class SellerController
             self::editSellerForm($data);
         }
     }
-
-    public static function deleteCostumer($id) {
-        CostumerDB::delete(["stranka_id" => $id]);
-        echo ViewHelperStore::redirect(BASE_URL . "seller/costumers");
+    public static function allSellers(){
+        echo ViewHelperStore::render("views/sellerList.php",[
+            "sellers" => SellerDB::getAll()
+            ]);
 
     }
 
+    public static function activateSeller(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $seller = SellerDB::get(["prodajalec_id" => $data["id"]]);
+        $params = [
+            'name' => $seller["name"],
+            'surname' => $seller["surname"],
+            'email' => $seller["email"],
+            'password' => $seller["password"],
+            'status_status_id' => "1",
+            'prodajalec_id' => $seller["prodajalec_id"]
+        ];
+        SellerDB::update($params);
+        ViewHelperStore::redirect(BASE_URL . "admin/sellers");
+
+    }
+    public static function deactivateSeller(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $seller = SellerDB::get(["prodajalec_id" => $data["id"]]);
+        $params = [
+            'name' => $seller["name"],
+            'surname' => $seller["surname"],
+            'email' => $seller["email"],
+            'password' => $seller["password"],
+            'status_status_id' => "2",
+            'prodajalec_id' => $seller["prodajalec_id"]
+        ];
+        SellerDB::update($params);
+        ViewHelperStore::redirect(BASE_URL . "admin/sellers");
+    }
 
     public static function checkValues($input) {
         if (empty($input)) {

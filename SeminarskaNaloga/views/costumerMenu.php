@@ -4,11 +4,15 @@ if (!isset($_SERVER["HTTPS"])) {
     header("Location: " . $url);
 }
 ?>
-<!DOCTYPE html>
 
-<link rel="stylesheet" type="text/css" href="../static/style.css">
-<meta charset="UTF-8" />
-<title>create</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>store</title>
+</head>
+<body>
 <?php
 if($_SESSION["role"] == "costumer"): ?>
     <a href="<?= BASE_URL . "costumer/" . $_SESSION["user"]["stranka_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
@@ -35,19 +39,23 @@ if($_SESSION["role"] == "admin"): ?>
         <button><h1>STORE</h1></button>
     </form>
 </div>
-<div class="row align-self-center">
-    <form action="<?=BASE_URL . "seller"?> " method="">
-        <button><h2>KONZOLA PRODAJALCA</h2></button>
-    </form>
+
+<h1><?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?> </h1>
+<div class="container">
+    <div class="col-12">
+        <div class="row">
+            <form action="<?=BASE_URL . "costumer/" . $_SESSION["user"]["stranka_id"] . "/edit" ?>">
+                <button>MOJi PODATKI</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="row">
+            <form action="<?=BASE_URL . "costumer/" . $_SESSION["user"]["stranka_id"] . "/orders" ?>" method="post" >
+                <button>NAROČILA</button>
+            </form>
+        </div>
+    </div>
+
 </div>
-
-<h1>Nov Izdelek</h1>
-
-
-<form action="<?= BASE_URL . "products/create" ?>" method="post">
-    <p><label>Ime: <input type="text" name="name" value="<?=$name?>"/></label></p>
-    <p><label>Cena: <input type="number" name="price" value="<?=$price?>" /></label></p>
-    <p><label>Description: <br/><textarea name="describtion" cols="70" rows="10" value="<?=$describtion?>"></textarea></label></p>
-    <p><label>Status: <input type="number" name="status" value="<?=$status_status_id?>" /></label></p>
-    <p><button>Ustvari</button></p>
-</form>
+</body>

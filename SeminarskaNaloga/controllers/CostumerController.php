@@ -2,6 +2,9 @@
 
 require_once ("models/CostumerDB.php");
 require_once ("models/ProductsDB.php");
+require_once ("models/OrderDB.php");
+require_once ("models/ProductInOrder.php");
+require_once ("models/StatusDB.php");
 require_once ("ViewHelperStore.php");
 
 class CostumerController
@@ -13,7 +16,7 @@ class CostumerController
     }
 
 
-    public static function registration() {
+    public static function costumerCreate() {
         $data = filter_input_array(INPUT_POST, self::getRules());
 
         $data["password"] = password_hash($data["password"], PASSWORD_DEFAULT);
@@ -53,9 +56,48 @@ class CostumerController
         echo ViewHelperStore::redirect(BASE_URL . "seller/costumers");
 
     }
+    public static function activateCostumer(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $seller = CostumerDB::get(["stranka_id" => $data["id"]]);
+        $params = [
+            'name' => $seller["name"],
+            'surname' => $seller["surname"],
+            'email' => $seller["email"],
+            'password' => $seller["password"],
+            'naslov_postNum' => $seller["naslov_postNum"],
+            'status_status_id' => "1",
+            'street' => $seller["street"],
+            'stranka_id' => $seller["stranka_id"]
+        ];
+        CostumerDB::update($params);
+        ViewHelperStore::redirect(BASE_URL . "seller/costumers");
 
+    }
+    public static function deactivateCostumer(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $seller = CostumerDB::get(["stranka_id" => $data["id"]]);
+        $params = [
+            'name' => $seller["name"],
+            'surname' => $seller["surname"],
+            'email' => $seller["email"],
+            'password' => $seller["password"],
+            'naslov_postNum' => $seller["naslov_postNum"],
+            'status_status_id' => "2",
+            'street' => $seller["street"],
+            'stranka_id' => $seller["stranka_id"]
+        ];
 
+        CostumerDB::update($params);
+        ViewHelperStore::redirect(BASE_URL . "seller/costumers");
+    }
 
+    public static function menu(){
+        echo ViewHelperStore::render("views/costumerMenu.php",[]);
+    }
     public static function checkValues($input) {
         if (empty($input)) {
             return FALSE;

@@ -1,3 +1,11 @@
+<?php
+if (isset($_SESSION["role"])) {
+    if (!isset($_SERVER["HTTPS"])) {
+        $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+        header("Location: " . $url);
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +17,7 @@
     <div class="container">
         <?php
         if($_SESSION["role"] == "costumer"): ?>
-            <a href="<?= BASE_URL . "costumer/" . $_SESSION["user"]["stranka_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+            <a href="<?= BASE_URL . "costumer/menu" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
             <form action="<?=BASE_URL . "logout"?> " method="">
                 <button><p>odjava</p></button>
             </form>
@@ -23,7 +31,7 @@
         <?php endif; ?>
         <?php
         if($_SESSION["role"] == "admin"): ?>
-            <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin:id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+            <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
             <form action="<?=BASE_URL . "logout"?> " method="">
                 <button><p>odjava</p></button>
             </form>
@@ -119,6 +127,7 @@
                     <div class="row align-self-center">
                         <button><a href="<?= BASE_URL . "products" ?>">Vstopi v trgovino</a></button>
                     </div>
+
                 <?php elseif ($_SESSION["role"] == "seller"): ?>
                     <div class="row align-self-center">
                         <h2>DOBRODOŠLI V SPLETNI TRGOVINI STORE <?= $_SESSION["user"]["name"]?></h2>
@@ -127,6 +136,16 @@
                     </div>
                     <div class="row align-self-center">
                         <button><a href="<?= BASE_URL . "seller" ?>">Nadzorna plošča</a></button>
+                    </div>
+
+                <?php elseif ($_SESSION["role"] == "admin"): ?>
+                    <div class="row align-self-center">
+                        <h2><?= $_SESSION["user"]["name"]?></h2>
+                    </div><div class="row align-self-center">
+                        <button><a href="<?= BASE_URL . "products" ?>">V Trgovino</a></button>
+                    </div>
+                    <div class="row align-self-center">
+                        <button><a href="<?= BASE_URL . "admin" ?>">Nadzorna plošča</a></button>
                     </div>
                 <?php endif;
             endif; ?>

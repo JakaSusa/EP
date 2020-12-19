@@ -1,15 +1,12 @@
 <?php
-if (isset($_SESSION["role"])) {
-    if (!isset($_SERVER["HTTPS"])) {
+if (!isset($_SERVER["HTTPS"])) {
     $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     header("Location: " . $url);
-    }
 }
 ?>
-
 <!DOCTYPE html>
 
-<link rel="stylesheet" type="text/css" href="static/style.css">
+<link rel="stylesheet" type="text/css" href="../static/style.css">
 <title>store</title>
 <meta charset="UTF-8" />
 <?php
@@ -55,7 +52,7 @@ if($_SESSION["role"] == "costumer"): ?>
                 <div class="row">
                     <?php if (isset($_SESSION["cart"])): ?>
                         <div class="col-4">
-                            <form action="<?=BASE_URL . "products/order"?>" method="">
+                            <form action="<?=BASE_URL . "products/order"?>" method="post">
                                 <button type="submit">Nadaljuj</button>
                             </form>
                         </div>
@@ -73,53 +70,38 @@ if($_SESSION["role"] == "costumer"): ?>
         </div>
     </div>
 <?php endif; ?>
-<?php
-if($_SESSION["role"] == "seller"): ?>
-    <a href="<?= BASE_URL . "seller/" . $_SESSION["user"]["prodajalec_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
-    <form action="<?=BASE_URL . "logout"?> " method="">
-        <button><p>odjava</p></button>
-    </form>
-<?php endif; ?>
-<?php
-if($_SESSION["role"] == "admin"): ?>
-    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin:id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
-    <form action="<?=BASE_URL . "logout"?> " method="">
-        <button><p>odjava</p></button>
-    </form>
-<?php endif; ?>
-<div class="row align-self-center">
-    <form action="<?=BASE_URL ?> " method="">
-        <button><h1>STORE</h1></button>
-    </form>
-</div>
-
-<h1>Produkti</h1>
+<h1>Naročilo</h1>
 
 <div id="main">
-    <?php foreach ($products as $product): ?>
-        <div class="product">
-            <form action="<?=BASE_URL . "product/add-to-cart" ?>" method="post" >
-                <input type="hidden" name="id" value="<?= $product["product_id"] ?>" />
-                <a href="<?=BASE_URL . "products/" . $product["product_id"]?>"><?= $product["name"]?></a>
-                <p><?= $product["price"]?> EUR</p>
-                <?php if(!isset($_SESSION["user"])): ?>
-                    <button disabled style="background-color: #888888">Dodaj v košarico</button>
-                <?php else: ?>
-                    <button >Dodaj v košarico</button>
-                <?php endif;?>
-            </form>
-        </div>
-    <?php endforeach; ?>
+    <?php
+    if (isset($_SESSION["cart"])):
+        $sum = 0;
+        foreach (array_keys($_SESSION["cart"]) as $id):
+            $product = ProductsDB::get(["product_id" => $id]);
+            $sum = $sum + ($_SESSION["cart"][$product["product_id"]] * $product["price"]);
+            ?>
+            <div class="product">
+                <div class="row" >
+                    <p><strong>Izdelek: </strong><?= $product["name"] ?></strong></p>
+                    <p type="text" name="count" ><strong>Količina:</strong>  <?= $_SESSION["cart"][$product["product_id"]] ?></p>
+                    <p>Cena: <?=$_SESSION["cart"][$product["product_id"]] * $product["price"]?> EUR</p>
+                </div>
+            </div>
+        <?php    endforeach; ?>
+        <p>Skupaj: <?=$sum?> EUR</p>
+    <?php endif; ?>
 </div>
-<script>
-    // Get the modal
-    var modal = document.getElementById('id03');
+<h3>Prejemnjik</h3>
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+<form action="<?= BASE_URL . "products/order" ?>" method="post">
 
-</script>
+    <div class="container">
+        <p><strong><?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></strong></p>
+        <p><strong>Email: </strong><?=$_SESSION["user"]["email"]?></p>
+        <p><strong>Naslov: </strong><?=$_SESSION["user"]["street"]?></p>
+        <?php $kraj = NaslovDB::get(["postNum" => $_SESSION["user"]["naslov_postNum"]]);?>
+        <p><strong>Pošta: </strong><?=$_SESSION["user"]["naslov_postNum"]?> <?=$kraj["postName"]?></p>
+
+        <button type="submit">Nadaljuj</button>
+    </div>
+</form>

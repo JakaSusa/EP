@@ -2,6 +2,7 @@
 require_once ("models/ProductsDB.php");
 require_once ("models/CostumerDB.php");
 require_once ("models/SellerDB.php");
+require_once ("models/AdminDB.php");
 require_once ("ViewHelperStore.php");
 
 class StoreController {
@@ -12,15 +13,6 @@ class StoreController {
 
         echo ViewHelperStore::render("views/mainPage.php", []);
 
-    }
-    public static function allProducts(){
-        echo ViewHelperStore::render("views/productList.php",
-            ["products" => ProductsDB::getAll()]);
-    }
-
-    public static function getProduct($id) {
-        echo ViewHelperStore::render("views/productDetail.php",
-            ["product" => ProductsDB::get(["product_id" => $id])]);
     }
 
     public static function addToCart(){
@@ -74,6 +66,8 @@ class StoreController {
     }
 
     public static function login (){
+        unset($_SESSION["cart"]);
+
         $rules = [
             "email" => FILTER_SANITIZE_SPECIAL_CHARS,
             "password" => FILTER_SANITIZE_SPECIAL_CHARS
@@ -82,12 +76,21 @@ class StoreController {
 
         $costumer = CostumerDB::login(["email" => $data["email"]]);
         $seller = SellerDB::login(["email" => $data["email"]]);
+        $admin = AdminDB::login(["email" => $data["email"]]);
 
         if($costumer!=null){
-            if(password_verify($data["password"], $costumer["password"])){
+
+            if($costumer["status_status_id"]==2){
+                $error = "Ta uporabniški račun je bil deaktiviran";
+                echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
+
+            }
+
+            elseif (password_verify($data["password"], $costumer["password"])){
                 $_SESSION["role"] = "costumer";
                 $_SESSION["user"] = $costumer;
 
+                session_regenerate_id();
                 echo ViewHelperStore::redirect(BASE_URL . "products");
             }
             else{
@@ -97,21 +100,46 @@ class StoreController {
         }
 
         elseif($seller!=null){
-            if(password_verify($data["password"], $seller["password"])){
+            if($seller["status_status_id"]==2){
+                $error = "Ta uporabniški račun je bil deaktiviran";
+                echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
+
+            }
+            elseif(password_verify($data["password"], $seller["password"])) {
                 $_SESSION["user"] = $seller;
                 $_SESSION["role"] = "seller";
-
-            echo ViewHelperStore::render("views/sellerMenu.php");
+                session_regenerate_id();
+                echo ViewHelperStore::render("views/sellerMenu.php");
+            }
+            else{
+                $error = "napačen email ali geslo";
+                echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
+            }
         }
+        elseif($admin!=null){
+
+            if(password_verify($data["password"], $admin["password"])) {
+                $_SESSION["user"] = $admin;
+                $_SESSION["role"] = "admin";
+                session_regenerate_id();
+                echo ViewHelperStore::render("views/adminMenu.php");
+            }
+            else{
+                $error = "napačen email ali geslo";
+                echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
+            }
+        }
+
         else{
             $error = "napačen email ali geslo";
             echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
         }
-        }
+
     }
 
     public static function logout(){
         session_destroy();
+        unset($_SERVER["HTTPS"]);
         ViewHelperStore::redirect(BASE_URL);
     }
 

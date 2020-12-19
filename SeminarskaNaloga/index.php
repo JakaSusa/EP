@@ -5,6 +5,9 @@ session_start();
 require_once("controllers/StoreController.php");
 require_once("controllers/SellerController.php");
 require_once("controllers/CostumerController.php");
+require_once("controllers/OrderController.php");
+require_once("controllers/ProductController.php");
+require_once("controllers/AdminController.php");
 
 
 define("BASE_URL", rtrim($_SERVER["SCRIPT_NAME"], "index.php"));
@@ -28,29 +31,29 @@ $urls = [
         StoreController::index();
     },
     "/^products$/" => function() {
-        StoreController::allProducts();
+        ProductController::allProducts();
     },
     "/^products\/create$/" => function($method) {
         if ($method== "POST") {
-            SellerController::createProduct();
+            ProductController::createProduct();
         } else {
-            SellerController::createProductFrom();
+            ProductController::createProductFrom();
         }
     },
     "/^products\/(\d+)\/edit$/" => function($method, $id) {
         if ($method == "POST") {
-            SellerController::editProduct($id);
+            ProductController::editProduct($id);
         } else {
-            SellerController::editProductForm($id);
+            ProductController::editProductForm($id);
         }
     },
     "/^products\/(\d+)\/delete$/" => function($method, $id){
         if ($method == "POST") {
-            SellerController::deleteProduct($id);
+            ProductController::deleteProduct($id);
         }
     },
     "/^products\/(\d+)$/" => function($method, $product_id){
-        StoreController::getProduct($product_id);
+        ProductController::getProduct($product_id);
     },
 
     "/product\/add-to-cart$/" => function($method){
@@ -63,32 +66,50 @@ $urls = [
         StoreController::purgeCart();
     },
     "/products\/order$/" => function($method){
-        OrderController::orderCreate();
+        if ($method == "POST") {
+            OrderController::orderCreate();
+        } else {
+            OrderController::orderCreateForm();
+        }
     },
 
     "/^seller$/" => function() {
         SellerController::index();
     },
     "/^seller\/products$/" => function(){
-        SellerController::allProducts();
+        ProductController::allProductsSeller();
     },
     "/^seller\/costumers$/" => function(){
         CostumerController::allCostumers();
     },
-    "/^costumer\/create$/" => function($method) {
-        if ($method== "POST") {
-            CostumerController::registration();
-        }
-    },
+
     "/^seller\/(\d+)\/edit$/" => function($method, $id) {
         if($method == "POST"){
-            StoreController::editSeller($id);
+            SellerController::editSeller($id);
         }
         else {
             SellerController::editSellerForm($id);
         }
     },
+    "/^seller\/orders$/" => function(){
+        OrderController::allOrders();
+    },
 
+    "/^order\/confirm$/" => function($method){
+        OrderController::confirmOrder();
+    },
+    "/^order\/decline$/" => function($id){
+        OrderController::declineOrder($id);
+    },
+    "/^order\/cancel$/" => function($id){
+        OrderController::cancelOrder($id);
+    },
+
+    "/^costumer\/create$/" => function($method) {
+        if ($method== "POST") {
+            CostumerController::costumerCreate();
+        }
+    },
     "/^costumer\/(\d+)\/edit$/" => function($method, $id) {
         if($method == "POST"){
             CostumerController::editCostumer($id);
@@ -97,8 +118,47 @@ $urls = [
             CostumerController::editCostumerForm($id);
         }
     },
+    "/^costumer\/(\d+)\/orders$/" => function($method, $id) {
+            OrderController::allOrdersFromCostumer($id);
+
+    },
     "/^costumer\/(\d+)\/delete$/" => function($method, $id) {
-        CostumerController::deleteCostumer($id);
+        CostumerController::allOrders($id);
+    },
+    "/^costumer\/menu$/" => function(){
+        CostumerController::menu();
+    },
+
+    "/^costumer\/activate$/" => function($id){
+        CostumerController::activateCostumer();
+    },
+    "/^costumer\/deactivate$/" => function($id){
+        CostumerController::deactivateCostumer();
+    },
+
+    "/^admin$/" => function(){
+        AdminController::index();
+    },
+    "/^admin\/(\d+)\/edit$/" => function($method, $id){
+        if($method == "POST"){
+            AdminController::editAdmin($id);
+        }
+        else {
+            AdminController::editAdminForm($id);
+        }
+    },
+
+    "/admin\/sellers$/" => function(){
+        SellerController::allSellers();
+    },
+
+
+
+    "/^seller\/activate$/" => function($id){
+        SellerController::activateSeller();
+    },
+    "/^seller\/deactivate$/" => function($id){
+        SellerController::deactivateSeller();
     },
      "/^login$/" => function() {
        StoreController::login();
