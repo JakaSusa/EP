@@ -4,13 +4,6 @@ if (!isset($_SERVER["HTTPS"])) {
     header("Location: " . $url);
 }
 ?>
-<?php
-require_once ("models/CostumerDB.php");
-require_once ("models/ProductsDB.php");
-require_once ("models/OrderDB.php");
-require_once ("models/ProductInOrder.php");
-require_once ("models/StatusDB.php");
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +27,7 @@ if($_SESSION["role"] == "seller"): ?>
 <?php endif; ?>
 <?php
 if($_SESSION["role"] == "admin"): ?>
-    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin:id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
     <form action="<?=BASE_URL . "logout"?> " method="">
         <button><p>odjava</p></button>
     </form>

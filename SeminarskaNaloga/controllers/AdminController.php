@@ -21,7 +21,7 @@ class AdminController {
         } else {
             throw new InvalidArgumentException("Cannot show form.");
         }
-        echo ViewHelperStore::render("views/adminEdit.php", $values[0]);
+        echo ViewHelperStore::render("views/adminEdit.php", $values);
     }
 
     public static function editAdmin($id) {
@@ -30,13 +30,47 @@ class AdminController {
         if (self::checkValues($data)) {
             $data["admin_id"] = $id;
             AdminDB::update($data);
-            echo ViewHelperStore::redirect(BASE_URL . "admin");
+            $values = AdminDB::get(["admin_id" => $id]);
+            if($_SESSION["role"]=="admin") {
+                $_SESSION["user"] = $values;
+            }            echo ViewHelperStore::render("views/adminEdit.php", $values);
         } else {
             self::editAdminForm($data);
         }
     }
+    public static function editPassword(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'currPassword' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'newPassword' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $costumer = AdminDB::get(["admin_id" => $data["id"]]);
 
+        if(password_verify($data["currPassword"], $costumer["password"])){
+            $costumer["password"] = password_hash($data["newPassword"], PASSWORD_DEFAULT);
+            AdminDB::update($costumer);
+            $values = AdminDB::get(["admin_id" => $data["id"]]);
+            $values["error"] = "geslo uspešno spremenjeno";
+            echo ViewHelperStore::render("views/adminEdit.php", $values);
+        }
+        else{
+            $values = AdminDB::get(["admin_id" => $data["id"]]);
+            $values["error"] = "gesli se ne ujemata";
+            echo ViewHelperStore::render("views/adminEdit.php", $values);
+        }
+    }
+    public static function checkValues($input) {
+        if (empty($input)) {
+            return FALSE;
+        }
 
+        $result = TRUE;
+        foreach ($input as $value) {
+            $result = $result && $value != false;
+        }
+
+        return $result;
+    }
     public static function getRulesEdit() {
         return [
             'name' => FILTER_SANITIZE_SPECIAL_CHARS,

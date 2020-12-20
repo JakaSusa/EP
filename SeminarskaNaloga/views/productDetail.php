@@ -25,7 +25,7 @@ if($_SESSION["role"] == "seller"): ?>
 <?php endif; ?>
 <?php
 if($_SESSION["role"] == "admin"): ?>
-    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin:id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
     <form action="<?=BASE_URL . "logout"?> " method="">
         <button><p>odjava</p></button>
     </form>
@@ -39,7 +39,7 @@ if($_SESSION["role"] == "admin"): ?>
 
 <div id="main">
     <h2><?=$product["name"] ?></h2>
-        <form action="<?=BASE_URL . "cart/addToCart" ?>" method="post" />
+        <form action="<?=BASE_URL . "product/add-to-cart" ?>" method="post" />
             <input type="hidden" name="id" value="<?= $product["product_id"] ?>" />
             <p>opis: <br> <?= $product["describtion"] ?> </p>
             <p>cena: <?= $product["price"]?> EUR</p>

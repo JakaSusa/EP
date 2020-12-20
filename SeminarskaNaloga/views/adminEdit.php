@@ -1,4 +1,5 @@
 <?php
+if($_SESSION["role"]== "admin"):
 if (!isset($_SERVER["HTTPS"])) {
     $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     header("Location: " . $url);
@@ -13,20 +14,8 @@ if (!isset($_SERVER["HTTPS"])) {
 </head>
 
 <?php
-if($_SESSION["role"] == "seller"): ?>
-    <a href="<?= BASE_URL . "seller/" . $_SESSION["user"]["prodajalec_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
-    <form action="<?=BASE_URL . "logout"?> " method="">
-        <button><p>odjava</p></button>
-    </form>
-<?php endif;
-if($_SESSION["role"] == "costumer"): ?>
-    <a href="<?= BASE_URL . "costumer/menu" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
-    <form action="<?=BASE_URL . "logout"?> " method="">
-        <button><p>odjava</p></button>
-    </form>
-<?php endif;
 if($_SESSION["role"] == "admin"): ?>
-    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin:id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
     <form action="<?=BASE_URL . "logout"?> " method="">
         <button><p>odjava</p></button>
     </form>
@@ -52,10 +41,10 @@ if($_SESSION["role"] == "admin"): ?>
         </form>
     </div>
 <?php endif; ?>
-
-<form action="<?= BASE_URL . "admin/" . $admin_id. "/edit" ?>" method="post">
+    <form action="<?= BASE_URL . "admin/" . $admin_id. "/edit" ?>" method="post">
 
     <div class="container">
+        <p><label>Ime: <input type="hidden"  name="name" value="<?=$admin_id?>" required/></label></p>
         <p><label>Ime: <input type="text"  name="name" value="<?=$name?>" required/></label></p>
         <p><label>Priimek: <input type="text"  name="surname" value="<?=$surname?>" required/></label></p>
         <p><label>Email: <input type="email"  name="email" value="<?=$email?>" required/></label></p>
@@ -64,6 +53,29 @@ if($_SESSION["role"] == "admin"): ?>
         <button type="submit">Posodobi podatke</button>
     </div>
 </form>
+    <button onclick="document.getElementById('id01').style.display='block'">Spremeni geslo</button>
+    <!-- The Modal -->
+    <div id="id01" class="modal">
+                <span onclick="document.getElementById('id01').style.display='none'"
+                      class="close" title="Close Modal">&times;</span>
+
+        <!-- Modal Content -->
+
+        <form class="modal-content animate" action="<?=BASE_URL . "admin/" . $admin_id . "/editPassword" ?>" method="post">
+            <input type="hidden" name="id" value="<?=$admin_id ?>"/>
+            <div class="container">
+                <input type="password" placeholder="Trenutno geslo" name="currPassword" value="<?=$currPassword ?>" required>
+                <input type="password" placeholder="Novo geslo" name="newPassword" value="<?=$newPassword ?>"required>
+                <button type="submit">Potrdi</button>
+            </div>
+        </form>
+        <div>
+            <?php if (!empty($error)): ?>
+                <p class="important"><?= $error ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
 
 
-<?php
+
+<?php endif;

@@ -1,4 +1,5 @@
 <?php
+if($_SESSION["role"] != "costumer"):
 if (!isset($_SERVER["HTTPS"])) {
     $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     header("Location: " . $url);
@@ -53,7 +54,8 @@ if($_SESSION["role"] == "admin"): ?>
     <p><label>Ime: <input type="text" name="name" value="<?= $name ?>" autofocus /></label></p>
     <p><label>Cena: <input type="number" name="price" value="<?= $price ?>" /></label></p>
     <p><label>Opis: <br/><textarea name="describtion" cols="70" rows="10"><?= $describtion ?></textarea></label></p>
-    <p><label>Status: <input type="number" name="status" value="<?=$status_status_id?>" /></label></p>
+    <p><label>Status: <input type="number" name="status_status_id" value="<?=$status_status_id?>" /></label></p>
 
     <p><button>Posodobi izdelek</button></p>
 </form>
+<?php endif;

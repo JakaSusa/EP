@@ -9,6 +9,9 @@ class ProductsDB extends AbstractDB {
 
         return parent::query("SELECT * FROM produkt");
     }
+    public static function getAllActive(){
+        return parent::query("SELECT * FROM produkt WHERE status_status_id = 1");
+    }
 
     public static function get(array $id)
     {
@@ -26,12 +29,12 @@ class ProductsDB extends AbstractDB {
     public static function insert(array $params)
     {
         return parent::modify("INSERT INTO produkt (name, price, describtion, status_status_id)"
-        . "VALUES (:name, :price, :describtion, :status)", $params);
+        . "VALUES (:name, :price, :describtion, :status_status_id)", $params);
     }
 
     public static function update(array $params)
     {
-        return parent::modify("UPDATE produkt SET name = :name, price = :price, describtion = :describtion, status_status_id = :status "
+        return parent::modify("UPDATE produkt SET name = :name, price = :price, describtion = :describtion, status_status_id = :status_status_id "
         . "WHERE product_id = :product_id", $params);
     }
 

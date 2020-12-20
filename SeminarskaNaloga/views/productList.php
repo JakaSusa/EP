@@ -96,7 +96,8 @@ if($_SESSION["role"] == "admin"): ?>
 <h1>Produkti</h1>
 
 <div id="main">
-    <?php foreach ($products as $product): ?>
+    <?php foreach ($products as $product):
+        if($product["status_status_id"]!=2):?>
         <div class="product">
             <form action="<?=BASE_URL . "product/add-to-cart" ?>" method="post" >
                 <input type="hidden" name="id" value="<?= $product["product_id"] ?>" />
@@ -109,6 +110,7 @@ if($_SESSION["role"] == "admin"): ?>
                 <?php endif;?>
             </form>
         </div>
+        <?php endif ?>
     <?php endforeach; ?>
 </div>
 <script>

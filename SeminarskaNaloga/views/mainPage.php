@@ -1,10 +1,9 @@
 <?php
-if (isset($_SESSION["role"])) {
     if (!isset($_SERVER["HTTPS"])) {
         $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
         header("Location: " . $url);
     }
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,13 +92,13 @@ if (isset($_SESSION["role"])) {
                     <form class="modal-content animate" action="<?= BASE_URL . "costumer/create" ?>" method="post">
 
                         <div class="container">
-                                <p><label>Ime: <input type="text" placeholder="Vnesi ime" name="name" value="<?=$name?>" required/></label></p>
-                                <p><label>Priimek: <input type="text" placeholder="Vnesi priimek" name="surname" value="<?=$surname?>" required/></label></p>
-                                <p><label>Email: <input type="email" placeholder="Vnesi email" name="email" value="<?=$email?>" required/></label></p>
-                                <p><label>Geslo: <input type="password" placeholder="Vnesi geslo" name="password" value="<?=$password?>" required/></label></p>
-    <!--                            <p><label>Kraj: <input type="text" placeholder="Vnesi kraj" name="name" value="--><?//=$confirmPassword?><!--" required/></label></p>-->
-                                <p><label>Pošta: <input type="number" placeholder="Vnesi poštno številko" name="naslov_postNum" value="<?=$naslov_postNum?>" required/></label></p>
-                                <p><label>Naslov: <input type="text" placeholder="Vnesi naslov" name="street" value="<?=$street?>" required/></label></p>
+                            <p><label>Ime: <input type="text" placeholder="Vnesi ime" name="name" value="<?=$name?>" required/></label></p>
+                            <p><label>Priimek: <input type="text" placeholder="Vnesi priimek" name="surname" value="<?=$surname?>" required/></label></p>
+                            <p><label>Email: <input type="email" placeholder="Vnesi email" name="email" value="<?=$email?>" required/></label></p>
+                            <p><label>Geslo: <input type="password" placeholder="Vnesi geslo" name="password" value="<?=$password?>" required/></label></p>
+                            <p><label>Pošta: <input type="number" placeholder="Vnesi poštno številko" name="naslov_postNum" value="<?=$naslov_postNum?>" required/></label></p>
+                            <p><label>Kraj: <input type="text" placeholder="Vnesi kraj" name="naslov_postName" value="<?=$city?>" required/></label></p>
+                            <p><label>Naslov: <input type="text" placeholder="Vnesi naslov" name="street" value="<?=$street?>" required/></label></p>
 
                                 <button type="submit">Registracija</button>
                         </div>

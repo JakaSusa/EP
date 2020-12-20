@@ -13,7 +13,7 @@ class NaslovDB extends AbstractDB
             return $kraj[0];
         }
         else {
-            throw new InvalidArgumentException("Tako naročilo ne obstaja");
+            return null;
         }
     }
 
@@ -24,7 +24,7 @@ class NaslovDB extends AbstractDB
 
     public static function insert(array $params)
     {
-        // TODO: Implement insert() method.
+        return parent::modify("INSERT INTO naslov (postNum, postName) VALUES (:postNum, :postName)", $params);
     }
 
     public static function update(array $params)

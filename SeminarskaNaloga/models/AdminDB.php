@@ -7,7 +7,8 @@ class AdminDB extends AbstractDB
 
     public static function get(array $id)
     {
-        return parent::query("SELECT * FROM administrator WHERE admin_id = :admin_id", $id );
+        $data = parent::query("SELECT * FROM administrator WHERE admin_id = :admin_id", $id );
+        return $data[0];
     }
 
     public static function getAll()

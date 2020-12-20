@@ -65,10 +65,26 @@ class ProductController
             self::editProductForm($data);
         }
     }
-    public static function deleteProduct($id) {
-        ProductsDB::delete(["product_id" => $id]);
-        echo ViewHelperStore::redirect(BASE_URL . "seller/products");
+    public static function activateProduct(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $product = ProductsDB::get(["product_id" => $data["id"]]);
+        $product["status_status_id"] = "1";
 
+        ProductsDB::update($product);
+        ViewHelperStore::redirect(BASE_URL . "seller/products");
+    }
+
+    public static function deactivateProduct(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $product = ProductsDB::get(["product_id" => $data["id"]]);
+        $product["status_status_id"] = "2";
+
+        ProductsDB::update($product);
+        ViewHelperStore::redirect(BASE_URL . "seller/products");
     }
 
     public static function checkValues($input) {
@@ -88,7 +104,7 @@ class ProductController
             'name' => FILTER_SANITIZE_SPECIAL_CHARS,
             'describtion' => FILTER_SANITIZE_SPECIAL_CHARS,
             'price' => FILTER_VALIDATE_FLOAT,
-            'status' => FILTER_SANITIZE_SPECIAL_CHARS
+            'status_status_id' => FILTER_SANITIZE_SPECIAL_CHARS
         ];
     }
 }

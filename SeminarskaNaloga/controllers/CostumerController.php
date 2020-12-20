@@ -5,6 +5,7 @@ require_once ("models/ProductsDB.php");
 require_once ("models/OrderDB.php");
 require_once ("models/ProductInOrder.php");
 require_once ("models/StatusDB.php");
+require_once ("models/NaslovDB.php");
 require_once ("ViewHelperStore.php");
 
 class CostumerController
@@ -18,10 +19,26 @@ class CostumerController
 
     public static function costumerCreate() {
         $data = filter_input_array(INPUT_POST, self::getRules());
-
+        echo var_dump($data);
+        $post = NaslovDB::get(["postNum"=>$data["naslov_postNum"]]);
+        if($post == null){
+            $params = ['postNum'=> $data["naslov_postNum"],
+                'postName' => $data["naslov_postName"]];
+            NaslovDB::insert($params);
+        }
         $data["password"] = password_hash($data["password"], PASSWORD_DEFAULT);
         if(self::checkValues($data)){
-            $id = CostumerDB::insert($data);
+                $params = [
+                    'name' => $data["name"],
+                    'surname' => $data["surname"],
+                    'email' => $data["email"],
+                    'password' => $data["password"],
+                    'naslov_postNum' => $data["naslov_postNum"],
+                    'status_status_id' => "1",
+                    'street' => $data["street"],
+                ];
+
+            $id = CostumerDB::insert($params);
             $message = "uporabnik dodan, za nadaljevanje je potrebna prijava.";
             echo ViewHelperStore::redirect(BASE_URL);
             echo ViewHelperStore::render(BASE_URL, $message);
@@ -42,11 +59,22 @@ class CostumerController
     public static function editCostumer($id) {
 
         $data = filter_input_array(INPUT_POST, self::getRulesEdit());
-        echo var_dump($data);
         if (self::checkValues($data)) {
             $data["stranka_id"] = $id;
             CostumerDB::update($data);
-            echo ViewHelperStore::redirect(BASE_URL . "seller/costumers");
+            $values = CostumerDB::get(["stranka_id" => $id]);
+            if($_SESSION["role"]=="costumer") {
+                $_SESSION["user"] = $values;
+            }
+
+            if($_SESSION["role"]== "seller") {
+                echo ViewHelperStore::render("views/costumerEdit.php", $values);
+            }
+            else{
+                echo ViewHelperStore::render("views/costumerEdit.php", $values);
+
+
+            }
         } else {
             self::editCostumerForm($data);
         }
@@ -95,6 +123,29 @@ class CostumerController
         ViewHelperStore::redirect(BASE_URL . "seller/costumers");
     }
 
+    public static function editPassword(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'currPassword' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'newPassword' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $costumer = CostumerDB::get(["stranka_id" => $data["id"]]);
+
+        if(password_verify($data["currPassword"], $costumer["password"])){
+            $costumer["password"] = password_hash($data["newPassword"], PASSWORD_DEFAULT);
+            CostumerDB::update($costumer);
+            $values = CostumerDB::get(["stranka_id" => $data["id"]]);
+            $values["error"] = "geslo uspešno spremenjeno";
+            echo ViewHelperStore::render("views/costumerEdit.php", $values);
+        }
+        else{
+            $values = CostumerDB::get(["stranka_id" => $data["id"]]);
+            $values["error"] = "gesli se ne ujemata";
+            echo ViewHelperStore::render("views/costumerEdit.php", $values);
+        }
+    }
+
+
     public static function menu(){
         echo ViewHelperStore::render("views/costumerMenu.php",[]);
     }
@@ -117,6 +168,7 @@ class CostumerController
             'email' => FILTER_VALIDATE_EMAIL,
             'password' => FILTER_SANITIZE_SPECIAL_CHARS,
             'naslov_postNum' => FILTER_VALIDATE_FLOAT,
+            'naslov_postName' => FILTER_SANITIZE_SPECIAL_CHARS,
             'street' => FILTER_SANITIZE_SPECIAL_CHARS
         ];
     }

@@ -1,4 +1,5 @@
 <?php
+if($_SESSION["role"] != "costumer"):
 if (!isset($_SERVER["HTTPS"])) {
     $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     header("Location: " . $url);
@@ -25,7 +26,7 @@ if($_SESSION["role"] == "seller"): ?>
 <?php endif; ?>
 <?php
 if($_SESSION["role"] == "admin"): ?>
-    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin:id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
     <form action="<?=BASE_URL . "logout"?> " method="">
         <button><p>odjava</p></button>
     </form>
@@ -48,6 +49,7 @@ if($_SESSION["role"] == "admin"): ?>
     <p><label>Ime: <input type="text" name="name" value="<?=$name?>"/></label></p>
     <p><label>Cena: <input type="number" name="price" value="<?=$price?>" /></label></p>
     <p><label>Description: <br/><textarea name="describtion" cols="70" rows="10" value="<?=$describtion?>"></textarea></label></p>
-    <p><label>Status: <input type="number" name="status" value="<?=$status_status_id?>" /></label></p>
+    <p><label>Status: <input type="number" name="status_status_id" value="<?=$status_status_id?>" /></label></p>
     <p><button>Ustvari</button></p>
 </form>
+<?php endif;

@@ -90,6 +90,7 @@ class StoreController {
                 $_SESSION["role"] = "costumer";
                 $_SESSION["user"] = $costumer;
 
+
                 session_regenerate_id();
                 echo ViewHelperStore::redirect(BASE_URL . "products");
             }
@@ -106,10 +107,21 @@ class StoreController {
 
             }
             elseif(password_verify($data["password"], $seller["password"])) {
-                $_SESSION["user"] = $seller;
-                $_SESSION["role"] = "seller";
-                session_regenerate_id();
-                echo ViewHelperStore::render("views/sellerMenu.php");
+
+                $authorized_user = ["janez@prodajalec@store.com"];
+                $client_cert = filter_input(INPUT_SERVER, "SSL_CLIENT_CERT");
+                $cert_data = openssl_x509_parse($client_cert);
+                $name = $cert_data["subject"]["emailAddress"];
+
+                if (in_array($name, $authorized_user)) {
+                    session_regenerate_id();
+                    $_SESSION["role"] = "seller";
+                    $_SESSION["user"] = $seller;
+                    echo ViewHelperStore::redirect(BASE_URL . "products");
+                } else {
+                    $error = "napačen certifikat";
+                    echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
+                }
             }
             else{
                 $error = "napačen email ali geslo";
@@ -119,17 +131,30 @@ class StoreController {
         elseif($admin!=null){
 
             if(password_verify($data["password"], $admin["password"])) {
-                $_SESSION["user"] = $admin;
-                $_SESSION["role"] = "admin";
-                session_regenerate_id();
-                echo ViewHelperStore::render("views/adminMenu.php");
+                $authorized_user = ["admin.ad@store.com"];
+                $client_cert = filter_input(INPUT_SERVER, "SSL_CLIENT_CERT");
+                $cert_data = openssl_x509_parse($client_cert);
+                $name = $cert_data["subject"]["emailAddress"];
+                echo var_dump($name);
+                echo var_dump($authorized_user);
+                if (in_array($name, $authorized_user)) {
+                    $_SESSION["user"] = $admin;
+                    $_SESSION["role"] = "admin";
+                    session_regenerate_id();
+
+                    echo ViewHelperStore::redirect(BASE_URL. "admin");
+                } else {
+                    echo "ok";
+
+                    $error = "napačen certifikat";
+                    echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
+                }
             }
-            else{
+            else {
                 $error = "napačen email ali geslo";
                 echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);
             }
         }
-
         else{
             $error = "napačen email ali geslo";
             echo ViewHelperStore::render("views/mainPage.php", ["error" => $error]);

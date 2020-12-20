@@ -32,7 +32,12 @@ class SellerController
         if (self::checkValues($data)) {
             $data["prodajalec_id"] = $id;
             SellerDB::update($data);
-            echo ViewHelperStore::redirect(BASE_URL . "seller");
+            $values = SellerDB::get(["prodajalec_id" => $id]);
+            if($_SESSION["role"]=="seller") {
+                $_SESSION["user"] = $values;
+            }
+
+            echo ViewHelperStore::render("views/sellerEdit.php", $values);
         } else {
             self::editSellerForm($data);
         }
@@ -76,6 +81,27 @@ class SellerController
         ];
         SellerDB::update($params);
         ViewHelperStore::redirect(BASE_URL . "admin/sellers");
+    }
+    public static function editPassword(){
+        $data = filter_input_array(INPUT_POST, [
+            'id' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'currPassword' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'newPassword' => FILTER_SANITIZE_SPECIAL_CHARS
+        ]);
+        $costumer = SellerDB::get(["prodajalec_id" => $data["id"]]);
+
+        if(password_verify($data["currPassword"], $costumer["password"])){
+            $costumer["password"] = password_hash($data["newPassword"], PASSWORD_DEFAULT);
+            SellerDB::update($costumer);
+            $values = SellerDB::get(["prodajalec_id" => $data["id"]]);
+            $values["error"] = "geslo uspešno spremenjeno";
+            echo ViewHelperStore::render("views/sellerEdit.php", $values);
+        }
+        else{
+            $values = SellerDB::get(["prodajalec_id" => $data["id"]]);
+            $values["error"] = "gesli se ne ujemata";
+            echo ViewHelperStore::render("views/sellerEdit.php", $values);
+        }
     }
 
     public static function checkValues($input) {

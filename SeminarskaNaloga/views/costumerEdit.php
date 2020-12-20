@@ -26,7 +26,7 @@ if($_SESSION["role"] == "costumer"): ?>
     </form>
 <?php endif;
 if($_SESSION["role"] == "admin"): ?>
-    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin:id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
+    <a href="<?= BASE_URL . "admin/" . $_SESSION["user"]["admin_id"] . "/edit" ?> "> <?= $_SESSION["user"]["name"]?> <?= $_SESSION["user"]["surname"]?></a>
     <form action="<?=BASE_URL . "logout"?> " method="">
         <button><p>odjava</p></button>
     </form>
@@ -51,7 +51,7 @@ if($_SESSION["role"] == "seller"): ?>
         <p><label>Ime: <input type="text"  name="name" value="<?=$name?>" required/></label></p>
         <p><label>Priimek: <input type="text"  name="surname" value="<?=$surname?>" required/></label></p>
         <p><label>Email: <input type="email"  name="email" value="<?=$email?>" required/></label></p>
-        <p><label>Geslo: <input type="password" name="password" value="<?=$password?>" required/></label></p>
+        <input type="hidden" name="password" value="<?=$password?>" required/>
         <p><label>Pošta: <input type="number" name="naslov_postNum" value="<?=$naslov_postNum?>" required/></label></p>
         <p><label>Naslov: <input type="text"  name="street" value="<?=$street?>" required/></label></p>
         <input hidden type="number"  name="status_status_id" value="<?=$status_status_id?>" required/>
@@ -65,6 +65,32 @@ if($_SESSION["role"] == "seller"): ?>
         <button type="submit">Posodobi podatke</button>
     </div>
 </form>
+</div>
+<?php if($_SESSION["role"] == "costumer"): ?>
+
+    <button onclick="document.getElementById('id01').style.display='block'">Spremeni geslo</button>
+    <!-- The Modal -->
+    <div id="id01" class="modal">
+                <span onclick="document.getElementById('id01').style.display='none'"
+                      class="close" title="Close Modal">&times;</span>
+
+        <!-- Modal Content -->
+
+        <form class="modal-content animate" action="<?=BASE_URL . "costumer/" . $stranka_id . "/editPassword" ?>" method="post">
+            <input type="hidden" name="id" value="<?=$stranka_id ?>"/>
+            <div class="container">
+                <input type="password" placeholder="Trenutno geslo" name="currPassword" value="<?=$currPassword ?>" required>
+                <input type="password" placeholder="Novo geslo" name="newPassword" value="<?=$newPassword ?>"required>
+                <button type="submit">Potrdi</button>
+            </div>
+        </form>
+        <div>
+            <?php if (!empty($error)): ?>
+                <p class="important"><?= $error ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endif ?>
 <?php if($_SESSION["role"]=="seller") :
     if($status["status_id"]==2 ): ?>
         <form action="<?=BASE_URL . "costumer/activate" ?>" method="post">
@@ -76,9 +102,6 @@ if($_SESSION["role"] == "seller"): ?>
             <input type="hidden" name="id" value="<?=$stranka_id ?>"/>
             <button>Deaktiviraj uporabnika</button>
         </form>
-    <?php endif;
-    endif;?>
-<form action="<?=BASE_URL . "costumer/" . $stranka_id . "/delete" ?>" method="post">
-<button class="sellerbtn">odstrani</button>
-</form>
+    <?php endif;?>
+<?php endif;?>
 

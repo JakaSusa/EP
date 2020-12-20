@@ -1,4 +1,5 @@
 <?php
+if($_SESSION["role"] != "costumer"):
 if (!isset($_SERVER["HTTPS"])) {
     $url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     header("Location: " . $url);
@@ -52,3 +53,4 @@ if($_SESSION["role"] == "admin"): ?>
         </div>
     <?php endforeach; ?>
 </div>
+<?php endif;
